@@ -17,50 +17,61 @@ import Heatmap from "@/components/ui/heatmap";
 import dbService from "@/appwrite/db_service";
 import { fetchPlatformsUserData } from "@/lib/fetchData";
 import jwt from "jsonwebtoken"
+import { usePathname } from "next/navigation";
 
-export default function HomePage(){
+export default function Dashboard(){
+
+    const location = usePathname();
+    const userId = location.replace("/dashboard/","")
 
     const [activeTab, setActiveTab] = useState("leetcode");
     const [platformsData , setPlatformsData ] = useState(null);
+    const [isCurrentUser , setIsCurrentUser] = useState(false);
+    const [isPublic , setIsPublic] = useState(false);
     
     const fetchUserData = async () => {
       try {
-        // extracting accessToken from cookies =>
-        const cookie = document.cookie.split("; ").find((row) => row.startsWith("accessToken="));
-        const accessToken = cookie.split("=")[1];
-
-        const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
-        const userId = `${decodedToken?.userId}`;
-
         if(userId){
-          const userData = await dbService.getUserData({userId:userId});
-
-          if(userData?.platformData ){
-            const data = JSON.parse(userData.platformData);
-
-            // persisting data in localstorage => 
-            const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
+            let currUId = "";
             if(typeof window !== undefined){
-              localStorage.setItem("pdata" , dataToken)
+              const accessToken = localStorage.getItem("accessToken");
+              const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
+              currUId = decodedToken.userId; 
+            }
+            console.log(userId , currUId)
+            if(userId === currUId){
+              setIsCurrentUser(true)
             }
 
-            setPlatformsData(data);
-          }
-          else{
-            const data = await fetchPlatformsUserData(userId);
-            if(data){
-              const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
-              if(typeof window !== undefined){
+            const userData = await dbService.getUserData({userId:userId});
+
+            setIsPublic(userData?.isPublic);
+
+            if( isCurrentUser === true && userData?.platformData ){
+                const data = JSON.parse(userData.platformData);
+                // persisting data in localstorage => 
+                const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
+                if(typeof window !== undefined){
                 localStorage.setItem("pdata" , dataToken)
-              }
-              setPlatformsData(data);
+                }
+                setPlatformsData(data);
             }
-          }
+            else{
+                const data = await fetchPlatformsUserData(userId);
+                if(data){
+                const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
+                if(typeof window !== undefined){
+                    localStorage.setItem("pdata" , dataToken)
+                }
+                setPlatformsData(data);
+                }
+            }
         }
       }
       catch(error) {
         console.log(error);
       }
+
     }
 
     const refreshUserData = async () => {
@@ -73,7 +84,7 @@ export default function HomePage(){
 
         const data = await fetchPlatformsUserData(userId);
         const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
-        if(typeof window !== undefined){
+        if(typeof window !== undefined && isCurrentUser === true){
           localStorage.setItem("pdata" , dataToken)
         }
         setPlatformsData(data);
@@ -110,6 +121,14 @@ export default function HomePage(){
           <h1>Loading...</h1>
         </div>
       )
+    }
+
+    if(isCurrentUser === false && isPublic === false){
+        return (
+            <div>
+                <h1 className="text-center">Not a Public Account</h1>
+            </div>
+        )
     }
 
     return (

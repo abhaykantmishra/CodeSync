@@ -17,15 +17,7 @@ export function Navbar({children , loginState=false}) {
 
   const router = useRouter()
   const location = usePathname();
-  let userId;
-  if(typeof window !== undefined){
-    const token = localStorage.getItem("accessToken")
-    if(token){
-      const decodedToken = jwt.verify(token , process.env.NEXT_PUBLIC_TOKEN_SECRET);
-      userId = decodedToken.userId;
-    }
-  }
-  const id= userId
+  const [id , setId] = useState("");
 
   const activeClassname = `text-blue-500`;
   const isActive = (name) => {
@@ -55,6 +47,18 @@ export function Navbar({children , loginState=false}) {
       router.push('//')
     }
   }
+
+  useEffect(() => {
+  let userId;
+  if(typeof window !== undefined){
+    const token = localStorage.getItem("accessToken")
+    if(token){
+      const decodedToken = jwt.verify(token , process.env.NEXT_PUBLIC_TOKEN_SECRET);
+      userId = decodedToken.userId;
+      setId(userId);
+    }
+  }
+  },[])
 
   return (
     <div className='flex flex-col w-full justify-center items-center'>

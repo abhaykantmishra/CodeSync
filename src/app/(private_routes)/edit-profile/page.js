@@ -6,8 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
-import { Mail, GraduationCap, Code, MessageCircle } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
+import { Mail, GraduationCap, Code, MessageCircle, EyeIcon, EyeOffIcon } from "lucide-react"
 import { useRouter } from 'next/navigation'
+import dbService from '@/appwrite/db_service'
+import jwt from "jsonwebtoken";
 
 const initialProfile = {
   basicInfo: {
@@ -33,28 +36,52 @@ const initialProfile = {
   },
 };
 
+const user = {
+  name:"",
+  email: "",
+  platforms:{}
+}
+
 export default function EditProfile() {
   const [profile, setProfile] = useState(initialProfile);
+  const [userData , setUserData] = useState();
+  const [isPublic , setIsPublic] = useState(false);
   const [errors, setErrors] = useState({});
   const router = useRouter();
 
-  const handleChange = (section, field, value) => {
-    setProfile(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value
+  const fetchCurrentUserdata = async () => {
+    try {
+      let currUId = "";
+      if(typeof window !== undefined){
+        const accessToken = localStorage.getItem("accessToken");
+        const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
+        currUId = decodedToken.userId; 
       }
-    }));
-  };
+      const currUserdata = await dbService.getUserData({userId : currUId});
+      const data = cleanUserData(currUserdata)
+      setUserData(data);
+      setIsPublic(data?.isPublic);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const toggleVisibility = () => {
+    setIsPublic(!isPublic)
+    setUserData((prev) => ({...prev , isPublic:(!isPublic)}));
+  }
+
+  useState(() => {
+    fetchCurrentUserdata()
+  } , [])
 
   const validateForm = ()=> {
     const newErrors = {};
 
-    if (!profile.basicInfo.name.trim()) {
+    if (!userData.name.trim()) {
       newErrors.basicInfo = { ...newErrors.basicInfo, name: "Name is required" };
     }
-    if (!profile.basicInfo.email.trim() || !/^\S+@\S+\.\S+$/.test(profile.basicInfo.email)) {
+    if (!userData.email.trim() || !/^\S+@\S+\.\S+$/.test(userData.email)) {
       newErrors.basicInfo = { ...newErrors.basicInfo, email: "Valid email is required" };
     }
 
@@ -62,12 +89,27 @@ export default function EditProfile() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const cleanUserData = (userData) => {
+    const filteredData = {};
+    for (const key in userData) {
+      if (!key.startsWith("$")) {
+        filteredData[key] = userData[key];
+      }
+    }
+    return filteredData;
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Profile updated:", profile);
-      // Here you would typically send the data to your backend
-      router.push('/profile');
+      console.log(userData)
+      try {
+        const res = await dbService.updateWholeUserData({data:userData});
+        console.log(res)
+      } catch (error) {
+        console.log(error)
+      }
+      router.push(`/profile/${userData?.userId}`);
     }
   };
 
@@ -90,8 +132,8 @@ export default function EditProfile() {
                     <Label htmlFor="name">Name</Label>
                     <Input
                       id="name"
-                      value={profile.basicInfo.name}
-                      onChange={(e) => handleChange('basicInfo', 'name', e.target.value)}
+                      value={userData?.name}
+                      onChange={(e) => setUserData((prev) => ({...prev, name:e.target.value}))}
                       className="mt-1"
                     />
                     {errors.basicInfo?.name && <p className="text-red-500 text-sm mt-1">{errors.basicInfo.name}</p>}
@@ -101,17 +143,42 @@ export default function EditProfile() {
                     <Input
                       id="email"
                       type="email"
-                      value={profile.basicInfo.email}
-                      onChange={(e) => handleChange('basicInfo', 'email', e.target.value)}
+                      value={userData?.email}
+                      onChange={(e) => setUserData((prev) => ({...prev, email:e.target.value}))}
                       className="mt-1"
                     />
                     {errors.basicInfo?.email && <p className="text-red-500 text-sm mt-1">{errors.basicInfo.email}</p>}
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap mt-6">
+                      <div className="flex items-center space-x-2 mx-1 my-1">
+                        {isPublic ? (
+                          <EyeIcon className="h-5 w-5 text-primary" />
+                        ) : (
+                          <EyeOffIcon className="h-5 w-5 text-muted-foreground" />
+                        )}
+                        <Label htmlFor="visibility-toggle" className="text-sm font-medium">
+                          Visibility:
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2 mx-1 my-1">
+                        <Switch
+                          id="visibility-toggle"
+                          checked={isPublic}
+                          onCheckedChange={toggleVisibility}
+                        />
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {isPublic ? 'Public' : 'Private'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <Separator />
 
+              {/* College  */}
               <div className="bg-green-50 dark:bg-transparent p-4 rounded-lg">
                 <h3 className="text-lg font-semibold mb-3 flex items-center text-green-700 dark:text-green-300">
                   <GraduationCap className="h-5 w-5 mr-2" />
@@ -122,8 +189,8 @@ export default function EditProfile() {
                     <Label htmlFor="college">College</Label>
                     <Input
                       id="college"
-                      value={profile.educationInfo.college}
-                      onChange={(e) => handleChange('educationInfo', 'college', e.target.value)}
+                      value={userData?.college}
+                      onChange={(e) => setUserData((prev) => ({...prev, college:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
@@ -131,8 +198,8 @@ export default function EditProfile() {
                     <Label htmlFor="graduationYear">Graduation Year</Label>
                     <Input
                       id="graduationYear"
-                      value={profile.educationInfo.graduationYear}
-                      onChange={(e) => handleChange('educationInfo', 'graduationYear', e.target.value)}
+                      value={userData?.graduationyear}
+                      onChange={(e) => setUserData((prev) => ({...prev, graduationyear:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
@@ -141,45 +208,89 @@ export default function EditProfile() {
 
               <Separator />
 
+              {/* Platforms  */}
               <div className="bg-yellow-50 dark:bg-transparent p-4 rounded-lg">
                 <h3 className="text-lg font-semibold mb-3 flex items-center text-yellow-700 dark:text-yellow-300">
                   <Code className="h-5 w-5 mr-2" />
                   Coding Platforms
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {Object.entries(profile.platformInfo).map(([platform, handle]) => (
-                    <div key={platform}>
-                      <Label htmlFor={platform}>{platform}</Label>
-                      <Input
-                        id={platform}
-                        value={handle}
-                        onChange={(e) => handleChange('platformInfo', platform, e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                  ))}
+                  <div>
+                    <Label htmlFor="leetcode">Leetcode</Label>
+                    <Input
+                      value={userData?.leetcodeusername}
+                      onChange={(e) => setUserData((prev) => ({...prev, leetcodeusername:e.target.value}))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="codechef">Codechef</Label>
+                    <Input
+                      value={userData?.codechefusername}
+                      onChange={(e) => setUserData((prev) => ({...prev, codechefusername:e.target.value}))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="codeforces">Codeforces</Label>
+                    <Input
+                      value={userData?.codeforcesusername}
+                      onChange={(e) => setUserData((prev) => ({...prev, codeforcesusername:e.target.value}))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="geeksforgeeks">GFG</Label>
+                    <Input
+                      value={userData?.geeksforgeeksusername}
+                      onChange={(e) => setUserData((prev) => ({...prev, geeksforgeeksusername:e.target.value}))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="codestudio">Codestudio</Label>
+                    <Input
+                      value={userData?.codestudiousername}
+                      onChange={(e) => setUserData((prev) => ({...prev, codestudiousername:e.target.value}))}
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
               </div>
 
               <Separator />
 
+              {/* Social  */}
               <div className="bg-purple-50 dark:bg-transparent p-4 rounded-lg">
                 <h3 className="text-lg font-semibold mb-3 flex items-center text-purple-700 dark:text-purple-300">
                   <MessageCircle className="h-5 w-5 mr-2" />
                   Social Handles
                 </h3>
                 <div className="space-y-4">
-                  {Object.entries(profile.socialHandles).map(([platform, handle]) => (
-                    <div key={platform}>
-                      <Label htmlFor={platform}>{platform}</Label>
-                      <Input
-                        id={platform}
-                        value={handle}
-                        onChange={(e) => handleChange('socialHandles', platform, e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                  ))}
+                  <div>
+                    <Label htmlFor="discord">Discord</Label>
+                    <Input
+                      value={userData?.discordusername}
+                      onChange={(e) => setUserData((prev) => ({...prev, discordusername:e.target.value}))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="github">Github</Label>
+                    <Input
+                      value={userData?.githubusername}
+                      onChange={(e) => setUserData((prev) => ({...prev, githubusername:e.target.value}))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="linkedin">Linkedin</Label>
+                    <Input
+                      value={userData?.linkedinusername}
+                      onChange={(e) => setUserData((prev) => ({...prev, linkedinusername:e.target.value}))}
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
               </div>
 

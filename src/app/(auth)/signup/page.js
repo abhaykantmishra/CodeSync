@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { BorderBeam } from '@/components/magicui/border-beam';
 import authService from '@/appwrite/auth_service';
 import { useRouter } from 'next/navigation';
+import jwt from "jsonwebtoken";
 
 export default function SignupPage() {
   
