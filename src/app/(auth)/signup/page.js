@@ -38,7 +38,7 @@ export default function SignupPage() {
           localStorage.setItem("accessToken" , token);
         }
         document.cookie = `accessToken=${token}; path=/; max-age=172800`;
-        router.push('/home');
+        router.push(`/edit-profile`);
       } catch (error) {
         console.log(error)
       }

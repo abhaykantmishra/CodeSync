@@ -34,7 +34,7 @@ export default function LoginPage(){
         }
         // setting token in cookie =>
         document.cookie = `accessToken=${token}; path=/; max-age=172800`;
-        router.push('/home');
+        router.push(`/dashboard/${userId}`);
       } catch (error) {
         console.log(error)
       }

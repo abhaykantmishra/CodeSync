@@ -70,7 +70,7 @@ export default function UserProfile({ profile = userProfileData }) {
     {
       (isPublic === false && isCurrentUser === false) ? (
         <div>
-          <h1>Profile is not public</h1>
+          <h1 className="text-center my-5 underline text-xl" >Profile is not public</h1>
         </div>
       ) : (
         <div className="container mx-auto p-4 space-y-6">

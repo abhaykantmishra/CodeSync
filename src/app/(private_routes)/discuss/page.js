@@ -11,6 +11,7 @@ import { MessageCircle, ThumbsUp, Send } from 'lucide-react'
 import dbService from '@/appwrite/db_service'
 import authService from '@/appwrite/auth_service'
 import { timeAgo } from '@/lib/commonFunctions'
+import Link from 'next/link'
 
 export default function DiscussionPage() {
   const [error, setError] = useState("");
@@ -152,7 +153,9 @@ export default function DiscussionPage() {
               <Card key={post.$id} className="bg-transparent dark:bg-gray-800 border-gray-700 shadow-md">
                 <CardHeader className="p-4 flex items-center space-x-4">
                   <div>
-                    <h3 className="font-semibold text-[16px] text-center lg:text-md 2xl:text-lg text-gray-100">{post.author}</h3>
+                    <Link href={`/profile/${post.authoruserid}`}>
+                      <h3 className="font-semibold text-[16px] text-center lg:text-md 2xl:text-lg text-gray-100">{post.author}</h3>
+                    </Link>
                     <div className='flex'>
                     <p className="text-xs text-gray-500 text-center dark:text-gray-400">Posted {timeAgo(new Date(post.$createdAt))} :</p>
                     {(post.comments?.length > 0 )? (
@@ -186,7 +189,9 @@ export default function DiscussionPage() {
                   <div className="px-4 pb-4 space-y-2">
                     {post.comments.map((comment) => (
                       <div key={comment.$id} className="bg-transparent border-[1px] dark:bg-gray-700 rounded-md p-2">
-                        <p className="text-sm font-semibold text-white dark:text-gray-300">{comment.author}</p>
+                        <Link href={`/profile/${comment.authoruserid}`}>
+                          <p className="text-sm font-semibold text-white dark:text-gray-300">{comment.author}</p>
+                        </Link>
                         <p className="text-sm xl:text-sm 2xl:text-md dark:text-gray-400">{`> ${comment.content}`}</p>
                       </div>
                     ))}

@@ -16,7 +16,7 @@ import {Barchart} from "@/components/ui/barchart";
 import Heatmap from "@/components/ui/heatmap";
 import dbService from "@/appwrite/db_service";
 import { fetchPlatformsUserData } from "@/lib/fetchData";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import { usePathname } from "next/navigation";
 
 export default function Dashboard(){
@@ -28,44 +28,51 @@ export default function Dashboard(){
     const [platformsData , setPlatformsData ] = useState(null);
     const [isCurrentUser , setIsCurrentUser] = useState(false);
     const [isPublic , setIsPublic] = useState(false);
+
+    const setCurrenUser = async ({userId}) => {
+        let currUId = "";
+        if(typeof window !== undefined){
+          const accessToken = localStorage.getItem("accessToken");
+          const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
+          currUId = String(decodedToken.userId); 
+        }
+        console.log(userId , currUId)
+        console.log(typeof userId);
+        console.log(typeof currUId);
+        if(userId.trim() == currUId.trim()){
+          setIsCurrentUser(true)
+        }
+    }
     
-    const fetchUserData = async () => {
+    const fetchUserData = async ({currUser}) => {
       try {
-        if(userId){
-            let currUId = "";
-            if(typeof window !== undefined){
-              const accessToken = localStorage.getItem("accessToken");
-              const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
-              currUId = decodedToken.userId; 
-            }
-            console.log(userId , currUId)
-            if(userId === currUId){
-              setIsCurrentUser(true)
-            }
+        const userData = await dbService.getUserData({userId:userId});
+        // console.log(userData.isPublic);
+        setIsPublic(userData?.isPublic);  
+        // console.log(userData.platformData);
 
-            const userData = await dbService.getUserData({userId:userId});
-
-            setIsPublic(userData?.isPublic);
-
-            if( isCurrentUser === true && userData?.platformData ){
-                const data = JSON.parse(userData.platformData);
-                // persisting data in localstorage => 
-                const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
-                if(typeof window !== undefined){
+        if(userData?.platformData !== null){
+          const data = JSON.parse(userData.platformData);
+          // persisting data in localstorage => 
+          if(currUser === true){
+            console.log("xyz");
+            const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
+            console.log(currUser);
+            console.log(dataToken);
+            if(typeof window !== undefined )
                 localStorage.setItem("pdata" , dataToken)
-                }
-                setPlatformsData(data);
-            }
-            else{
-                const data = await fetchPlatformsUserData(userId);
-                if(data){
-                const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
-                if(typeof window !== undefined){
-                    localStorage.setItem("pdata" , dataToken)
-                }
-                setPlatformsData(data);
-                }
-            }
+          }
+          setPlatformsData(data);
+        }
+        else if (userData.platformData === null) {
+          const data = await fetchPlatformsUserData(userId);
+          if(data){
+          const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
+          if(typeof window !== undefined){
+              localStorage.setItem("pdata" , dataToken)
+          }
+          setPlatformsData(data);
+          }
         }
       }
       catch(error) {
@@ -93,26 +100,31 @@ export default function Dashboard(){
       }
     }
 
-    let loaded = ""
-    if(typeof window !== undefined){
-      const token = localStorage.getItem("pdata")
-      if(token){
-        loaded = "true";
-      }else{
-        loaded = "fasle";
-      }
+    const extractPdata = (datatoken) => {
+        try {
+            const data = jwt.verify(datatoken,process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
+            console.log(data);
+            return data;
+        } catch (error) {
+            
+        }
     }
 
     useEffect(() => { 
-      if(loaded !== "true"){
-        fetchUserData();
-      }else{
+        const uid = String(location.replace("/dashboard/",""));
+        console.log(uid)
+        setCurrenUser({userId:uid});
+        let dataToken = "";
         if(typeof window !== undefined){
-          const datatoken = localStorage.getItem("pdata");
-          const data = jwt.verify(datatoken , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
-          setPlatformsData(data);
+            dataToken = localStorage.getItem("pdata");
         }
-      }
+        if(dataToken && isCurrentUser === true){
+            const data = extractPdata(dataToken)
+            setPlatformsData(data)
+        }else{
+            console.log(isCurrentUser);
+            fetchUserData({currUser:isCurrentUser});
+        }
     } , [])
 
     if(platformsData === null || platformsData === undefined ){

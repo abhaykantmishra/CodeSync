@@ -73,8 +73,8 @@ export function Navbar({children , loginState=false}) {
           loginState === true ? (
             <>
             <Button variant="ghost" size="icon" asChild>
-              <Link href="/home">
-                <Code className={ (isActive("/home"))=== true ? (`${activeClassname}`) : (``)} />
+              <Link href={`/dashboard/${id}`}>
+                <Code className={ (isActive(`/dashboard/`))=== true ? (`${activeClassname}`) : (``)} />
                 <span className="sr-only">Home</span>
               </Link>
             </Button>
