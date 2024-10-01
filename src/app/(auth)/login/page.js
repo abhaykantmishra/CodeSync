@@ -47,7 +47,7 @@ export default function LoginPage(){
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-white">Welcome Back to CMS</CardTitle>
           <CardDescription className="text-gray-200">
-            Login to CMS if you can because we don't have a login flow yet
+            Login to CMS
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -90,7 +90,7 @@ export default function LoginPage(){
               <Mail className="mr-2 h-4 w-4" /> Google
             </Button>
             <Link className='text-sm font-normal text-gray-300 dark:text-blue-500 text-center underline' href={'/signup'}>
-              <p className='mt-2'>Don't have an Account? Signup</p>
+              <p className='mt-2'>Don&apos;t have an Account? Signup</p>
             </Link>
           </div>
         </CardContent>

@@ -47,7 +47,7 @@ export default function SignupPage() {
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-white">Welcome to CMS</CardTitle>
             <CardDescription className="text-gray-200">
-              Signup to CMS if you can because we don't have a Signup flow
+              Signup to CMS
             </CardDescription>
           </CardHeader>
 
