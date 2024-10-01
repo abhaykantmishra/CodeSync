@@ -23,17 +23,13 @@ export default function SignupPage() {
 
   const handleSignup = async (e) => {
       e.preventDefault();
-      console.log("Sining Up..")
-      // console.log(formInput);
       const response = await authService.createAccount(formInput);
-      // console.log("creayedUser : " ,response);
       // logging In user
       const loggedInUser = await authService.loginUser({email:formInput.email , password:formInput.password});
-      // console.log("loggedInUser : ", loggedInUser);
       try {
-        const userId = loggedInUser.$id;
-        const token = jwt.sign({userId:userId} , process.env.NEXT_PUBLIC_TOKEN_SECRET , {expiresIn:"2d"});
-        console.log(token)
+        const userId = loggedInUser.userId;
+        const token = jwt.sign({userId:userId} , process.env.NEXT_PUBLIC_TOKEN_SECRET , {expiresIn:"1d"});
+       
         if(typeof window !== undefined){
           localStorage.setItem("accessToken" , token);
         }

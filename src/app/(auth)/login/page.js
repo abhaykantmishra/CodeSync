@@ -28,7 +28,7 @@ export default function LoginPage(){
       const response = await authService.loginUser(formInput)
       try {
         const userId = response.userId;
-        const token = jwt.sign({userId:userId} , process.env.NEXT_PUBLIC_TOKEN_SECRET , {expiresIn:"2d"});
+        const token = jwt.sign({userId:userId} , process.env.NEXT_PUBLIC_TOKEN_SECRET , {expiresIn:"1d"});
         if(typeof window !== undefined){
           localStorage.setItem("accessToken" , token);
         }

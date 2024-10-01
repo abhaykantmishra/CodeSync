@@ -19,7 +19,7 @@ export class AuthService {
             const newUser = await this.account.create(userId, email, password, name);
             const creaeDb = await dbService.createUserData({userId:userId,email:email,name:name})
             .then((res) => {
-                console.log(res)
+                // console.log(res)
             })
             .catch((err) => {
                 console.log(err);

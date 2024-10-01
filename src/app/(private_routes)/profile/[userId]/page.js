@@ -41,7 +41,7 @@ export default function UserProfile({ profile = userProfileData }) {
 
   const [userdata , setUserdata] = useState({});
   const [isCurrentUser , setIsCurrentUser] = useState(false);
-  const [isPublic , setIsPublic] = useState(false);
+  const [isPublic , setIsPublic] = useState(null);
 
   const fetchUserData = async () => {
     let currUId = "";
@@ -50,20 +50,23 @@ export default function UserProfile({ profile = userProfileData }) {
       const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
       currUId = decodedToken.userId; 
     }
-    console.log(userId , currUId)
     if(userId === currUId){
       setIsCurrentUser(true)
     }
-    const userData = await dbService.getUserData({userId:userId});
-    console.log(userData);
-    setUserdata(userData);
-    setIsPublic(userData?.isPublic);
+    try {
+      const userData = await dbService.getUserData({userId:userId});
+      setUserdata(userData);
+      setIsPublic(userData?.isPublic);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
     fetchUserData();
-    console.log(userId ,isCurrentUser , isPublic )
   } , []);
+
+
   
   return (
     <>
@@ -140,6 +143,13 @@ export default function UserProfile({ profile = userProfileData }) {
               <></>
             ) }
             </div>
+            {
+              ( userdata && (!userdata.leetcodeusername && !userdata.codechef && !userdata.codeforces 
+                && !userdata.geeksforgeeksusername && !userdata.codestudiousername))  ?
+              (
+                <p className='text-red-500 text-center text-sm font-semibold mb-5' >Add at least one Platform to see Dashboard</p>
+              ) : (<></>)
+            }
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-yellow-100 dark:bg-transparent p-2 rounded-sm outline outline-[0.2px] outline-yellow-800 dark:outline-yellow-200">
                   <span className="font-semibold text-yellow-800 dark:text-yellow-200">Leetcode</span>

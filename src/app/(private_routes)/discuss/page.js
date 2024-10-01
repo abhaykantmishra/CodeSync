@@ -43,7 +43,7 @@ export default function DiscussionPage() {
         post.comments = post.comments.map((comment) => (JSON.parse(comment)));
         return post;
       })
-      console.log(allPosts)
+      // console.log(allPosts)
       setPosts(allPosts.reverse());
     } catch (error) {
       console.log(error);
@@ -86,7 +86,7 @@ export default function DiscussionPage() {
 
   const addCommentOnDiscussion = async (postId) => {
     try {
-      console.log(postId);
+      // console.log(postId);
       const updatedPost = await dbService.addCommentOnDiscussion({
         discussionId:postId,
         content:comment,
@@ -121,7 +121,6 @@ export default function DiscussionPage() {
 
   useEffect(() => {
     fetchRecentPosts();
-    console.log(timeAgo(new Date('2023-09-30T12:30:00')))
   },[])
 
   return (

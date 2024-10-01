@@ -102,10 +102,10 @@ export default function EditProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log(userData)
+      // console.log(userData)
       try {
         const res = await dbService.updateWholeUserData({data:userData});
-        console.log(res)
+        // console.log(res)
       } catch (error) {
         console.log(error)
       }
@@ -214,6 +214,13 @@ export default function EditProfile() {
                   <Code className="h-5 w-5 mr-2" />
                   Coding Platforms
                 </h3>
+                {
+                  ( userData && (!userData.leetcodeusername && !userData.codechef && !userData.codeforces 
+                    && !userData.geeksforgeeksusername && !userData.codestudiousername))  ?
+                  (
+                    <p className='text-red-500 text-center text-sm font-semibold mb-2' >Add at least one Platform to see Dashboard</p>
+                  ) : (<></>)
+                }
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="leetcode">Leetcode</Label>

@@ -28,6 +28,7 @@ export default function Dashboard(){
     const [platformsData , setPlatformsData ] = useState(null);
     const [isCurrentUser , setIsCurrentUser] = useState(false);
     const [isPublic , setIsPublic] = useState(false);
+    const [noPlatformAdded , setNoPlatformAdded] = useState(false);
 
     const setCurrenUser = async ({userId}) => {
         let currUId = "";
@@ -36,9 +37,6 @@ export default function Dashboard(){
           const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
           currUId = String(decodedToken.userId); 
         }
-        console.log(userId , currUId)
-        console.log(typeof userId);
-        console.log(typeof currUId);
         if(userId.trim() == currUId.trim()){
           setIsCurrentUser(true)
         }
@@ -47,18 +45,20 @@ export default function Dashboard(){
     const fetchUserData = async ({currUser}) => {
       try {
         const userData = await dbService.getUserData({userId:userId});
-        // console.log(userData.isPublic);
+  
         setIsPublic(userData?.isPublic);  
-        // console.log(userData.platformData);
+        if(!userData.leetcodeusername && !userData.codechefusername && !userData.codeforcesusername && 
+          !userData.geeksforgeeksusername 
+        ){
+          setNoPlatformAdded(true);
+          return ;
+        }
 
         if(userData?.platformData !== null){
           const data = JSON.parse(userData.platformData);
           // persisting data in localstorage => 
           if(currUser === true){
-            console.log("xyz");
             const dataToken = jwt.sign(data , process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
-            console.log(currUser);
-            console.log(dataToken);
             if(typeof window !== undefined )
                 localStorage.setItem("pdata" , dataToken)
           }
@@ -103,7 +103,6 @@ export default function Dashboard(){
     const extractPdata = (datatoken) => {
         try {
             const data = jwt.verify(datatoken,process.env.NEXT_PUBLIC_DATA_ENCRYPTION_SECRET);
-            console.log(data);
             return data;
         } catch (error) {
             
@@ -112,7 +111,7 @@ export default function Dashboard(){
 
     useEffect(() => { 
         const uid = String(location.replace("/dashboard/",""));
-        console.log(uid)
+     
         setCurrenUser({userId:uid});
         let dataToken = "";
         if(typeof window !== undefined){
@@ -122,15 +121,30 @@ export default function Dashboard(){
             const data = extractPdata(dataToken)
             setPlatformsData(data)
         }else{
-            console.log(isCurrentUser);
             fetchUserData({currUser:isCurrentUser});
         }
     } , [])
 
-    if(platformsData === null || platformsData === undefined ){
+    if((noPlatformAdded === false) && (platformsData === null || platformsData === undefined)){
       return(
         <div>
-          <h1>Loading...</h1>
+          <h1 className="text-center text-lg mt-10">Loading...</h1>
+        </div>
+      )
+    }
+
+    if( (!platformsData && noPlatformAdded) && ( isCurrentUser === true || isPublic === true) ){
+      return (
+        <div>
+          <h1 className="text-center text-base md:text-lg mt-10 text-red-300">Add atleast One Platform to See Dashboard</h1>
+        </div>
+      )
+    }
+
+    if( (!platformsData && noPlatformAdded) && ( isCurrentUser === false || isPublic === false) ){
+      return (
+        <div>
+          <h1 className="text-center text-base md:text-lg mt-10">Not a Public Account</h1>
         </div>
       )
     }
@@ -138,7 +152,7 @@ export default function Dashboard(){
     if(isCurrentUser === false && isPublic === false){
         return (
             <div>
-                <h1 className="text-center">Not a Public Account</h1>
+                <h1 className="text-center text-base md:text-lg mt-10">Not a Public Account</h1>
             </div>
         )
     }
@@ -187,7 +201,15 @@ export default function Dashboard(){
 }
 
 function DsaStats({data}){
-
+    if(data === null || data === undefined ){
+      return (
+        <div>
+          <h1 className="text-center">
+            Add username for this platform in profile to see statistics
+          </h1>
+        </div>
+      )
+    }
      // Data for PieChart (solved problems by difficulty)
     const pieData = [
         { namekey: "easy", datakey: data?.solvedProblems?.easy, fill: "var(--color-easy)" },
@@ -216,8 +238,7 @@ function DsaStats({data}){
     for(let i=7 ; i<(data?.topicwiseData?.length)-1 ; i++){
       other = other + data?.topicwiseData[i].solvedProblem;
     }
-    // console.log("topicwisedata : ", topicwisedata)
-    // console.log("other:" , other)
+
     let i=0;
     let topicwiseData = topicwisedata?.map((topic) => {
       const arr = ["first" , "second" , "third" , "fourth" , "fifth" , "sixth"]
@@ -309,6 +330,16 @@ function DsaStats({data}){
 }
 
 function CpStats({data}){
+
+    if(data === null || data === undefined ){
+      return (
+        <div>
+          <h1 className="text-center">
+            Add username for this platform in profile to see statistics
+          </h1>
+        </div>
+      )
+    }
    
      // Data for PieChart (solved problems by difficulty)
     const pieData = [
@@ -339,8 +370,6 @@ function CpStats({data}){
     for(let i=7 ; i<(data?.topicwiseData?.length)-1 ; i++){
       other = other + data?.topicwiseData[i].solvedProblem;
     }
-    // console.log("topicwisedata : ", topicwisedata)
-    // console.log("other:" , other)
     let i=0;
     let topicwiseData = topicwisedata?.map((topic) => {
       const arr = ["first" , "second" , "third" , "fourth" , "fifth" , "sixth"]

@@ -4,7 +4,7 @@ export async function GET(request){
     const pathname = String(request?.url).substring(36)
     const username = pathname.replace("leetcode/","");
     try {
-        console.log(username);
+        // console.log(username);
         const data = await getGFGData(username);
         // console.log("data:" , data);
 

@@ -194,6 +194,7 @@ export class DbService {
                 conf.appwriteDiscussCollectionId
             )
         } catch (error) {
+            console.log("Appwrite :: fetch discussions :: error",error.message)
             throw error
         }
     }
