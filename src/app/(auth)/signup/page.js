@@ -43,17 +43,18 @@ export default function SignupPage() {
   return (
     <div className='flex-grow flex-col justify-center items-center h-[90vh] mx-4 md:mx-0 '>
       <div className=" flex items-center justify-center h-full my-auto overflow-hidden ">
-        <Card className= "border-none rounded-md relative overflow-hidden max-w-[450px] bg-gradient-to-br from-sky-800 via-sky-400 to-sky-800  dark:bg-gradient-to-br dark:from-gray-800 dark:via-purple-900 dark:to-gray-800 items-center">
+        <Card className= "border-none rounded-md relative overflow-hidden w-[400px] max-w-[450px] bg-gradient-to-br from-sky-800 via-sky-400 to-sky-800  dark:bg-gradient-to-br dark:from-gray-800 dark:via-purple-900 dark:to-gray-800 items-center">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-white">Welcome to CMS</CardTitle>
             <CardDescription className="text-gray-200">
               Signup to CMS
             </CardDescription>
           </CardHeader>
+          
 
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3">
             <form onSubmit={handleSignup}>
-                <div className="space-y-2 my-4">
+                <div className="space-y-2 my-2">
                     <label htmlFor="name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Name
                     </label>
@@ -92,17 +93,17 @@ export default function SignupPage() {
                     onChange={(e) => { setFormInput((prev) => ({ ...prev, password: e.target.value })) }}
                 />
                 </div>
-                <Button type="submit" className="w-full mt-4 bg-white text-black hover:bg-gray-200">
+                <Button type="submit" className="w-full mt-8 bg-white text-black hover:bg-gray-200">
                     Signup →
                 </Button>
             </form>
             <div className="space-y-2">
-              <Button variant="outline" className="w-full">
+              {/* <Button variant="outline" className="w-full">
                 <Github className="mr-2 h-4 w-4" /> GitHub
               </Button>
               <Button variant="outline" className="w-full">
                 <Mail className="mr-2 h-4 w-4" /> Google
-              </Button>
+              </Button> */}
               <Link href={'/login'}
                 className='text-sm font-normal text-gray-300 dark:text-blue-500 text-center underline'
               >

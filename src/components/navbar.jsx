@@ -67,14 +67,14 @@ export function Navbar({children , loginState=false}) {
 
       <div className="LEFT flex items-center md:space-x-4 sm:space-x-2">
         <Link href="/" className="text-2xl font-bold">
-          Logo
+          CodeSync
         </Link>
         {
           loginState === true ? (
             <>
             <Button variant="ghost" size="icon" asChild>
               <Link href={`/dashboard/${id}`}>
-                <Code className={ (isActive(`/dashboard/`))=== true ? (`${activeClassname}`) : (``)} />
+                <Code className={ (isActive(`/dashboard/${id}`))=== true ? (`${activeClassname}`) : (``)} />
                 <span className="sr-only">Home</span>
               </Link>
             </Button>

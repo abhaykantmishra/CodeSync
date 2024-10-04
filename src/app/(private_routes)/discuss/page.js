@@ -87,23 +87,23 @@ export default function DiscussionPage() {
   const addCommentOnDiscussion = async (postId) => {
     try {
       // console.log(postId);
-      const updatedPost = await dbService.addCommentOnDiscussion({
-        discussionId:postId,
-        content:comment,
-        author:currentUser.name,
-        authoruserid:currentUser.$id,
-      })
-      updatedPost.comments = updatedPost.comments.map((comment) => (JSON.parse(comment)));
-      setNewComment("")
-      setPosts((prev) => {
-        let updatedPosts = prev.map((post) => {
+      if(comment.trim()){
+        const updatedPost = await dbService.addCommentOnDiscussion({
+          discussionId:postId,
+          content:comment,
+          author:currentUser.name,
+          authoruserid:currentUser.$id,
+        })
+        updatedPost.comments = updatedPost.comments.map((comment) => (JSON.parse(comment)));
+        setNewComment("")
+        const updatedPosts = posts.map((post) => {
           if(post.$id == updatedPost.$id){
             post = updatedPost;
           }
           return post;
         })
-        return updatedPosts;
-      })
+        setPosts(updatedPosts);
+      }
     } catch (error) {
       console.log(error);
       setError(error.message)
@@ -179,7 +179,7 @@ export default function DiscussionPage() {
                   </Button>
                   <div className="flex items-center space-x-2 flex-grow">
                     <Input onChange={(e) => {setNewComment(e.target.value)}} placeholder="Comment..." className="flex-grow text-xs lg:text-sm h-8 bg-sky-400 dark:bg-gray-700 text-gray-700 dark:text-gray-100 border-gray-600 dark:focus:ring-purple-500" />
-                    <Button onClick={(e) => {addCommentOnDiscussion(post.$id)}} size="icon" className="h-8 w-8 text-black dark:text-white bg-sky-500 hover:bg-sky-600 dark:bg-purple-600 dark:hover:bg-purple-700">
+                    <Button  onClick={(e) => {addCommentOnDiscussion(post.$id)}} size="icon" className="h-8 w-8 text-black dark:text-white bg-sky-500 hover:bg-sky-600 dark:bg-purple-600 dark:hover:bg-purple-700">
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
