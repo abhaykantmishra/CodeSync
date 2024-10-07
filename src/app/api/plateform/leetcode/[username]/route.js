@@ -9,7 +9,14 @@ export async function GET(request){
     const username = pathname.replace("leetcode/","");
     try {
         // console.log(username);
-        const data = await getLeetcodeData(username);
+        let data;
+        try {
+            data = await getLeetcodeData(username);
+            console.log(data);
+        } catch (error) {
+            console.log(error)
+        }
+        
         // console.log("data:" , data);
 
         if(!data || !(data.username)){
