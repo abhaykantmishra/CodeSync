@@ -33,36 +33,41 @@ export async function GET(request){
 }
 
 async function getLeetcodeData(username){
-    try {
-        const res = await axios.get(`${url}/${username}`);
-        const userData = res.data;
-        const topicwiseData = userData.topicwiseData.map((topic) => {
-            return {topicName:topic.tagName , solvedProblem:topic.problemsSolved}
-        })
-        // console.log(topicwiseData)
-        // console.log(userData);
-        const data = {
-            username:userData.username,
-            rank: userData?.rank,
-            maxRank: userData?.rank,
-            // maxRating: ,
-            activeDays: userData?.userCalender?.totalActiveDays,
-            solvedProblems: {
-                easy: userData.problemsData?.submitStatsGlobal[1]?.count,
-                medium: userData.problemsData?.submitStatsGlobal[2]?.count,
-                hard: userData.problemsData?.submitStatsGlobal[3]?.count,
-            },
-            // contests: [
-            //     { contestId: 123, contestName: 'LeetCode Weekly Contest 200', contestDate: '2023-08-12', newRating: 1600 },
-            //     { contestId: 124, contestName: 'LeetCode Biweekly Contest 101', contestDate: '2023-08-26', newRating: 1550 },
-            //     { contestId: 125, contestName: 'LeetCode Weekly Contest 202', contestDate: '2023-09-10', newRating: 1700 },
-            // ],
-            topicwiseData:topicwiseData,
+    if(username?.trim()){
+        try {
+            const res = await axios.get(`${url}/${username}`);
+            const userData = res.data;
+            const topicwiseData = userData.topicwiseData.map((topic) => {
+                return {topicName:topic.tagName , solvedProblem:topic.problemsSolved}
+            })
+            // console.log(topicwiseData)
+            // console.log(userData);
+            const data = {
+                username:userData.username,
+                rank: userData?.rank,
+                maxRank: userData?.rank,
+                // maxRating: ,
+                activeDays: userData?.userCalender?.totalActiveDays,
+                solvedProblems: {
+                    easy: userData.problemsData?.submitStatsGlobal[1]?.count,
+                    medium: userData.problemsData?.submitStatsGlobal[2]?.count,
+                    hard: userData.problemsData?.submitStatsGlobal[3]?.count,
+                },
+                // contests: [
+                //     { contestId: 123, contestName: 'LeetCode Weekly Contest 200', contestDate: '2023-08-12', newRating: 1600 },
+                //     { contestId: 124, contestName: 'LeetCode Biweekly Contest 101', contestDate: '2023-08-26', newRating: 1550 },
+                //     { contestId: 125, contestName: 'LeetCode Weekly Contest 202', contestDate: '2023-09-10', newRating: 1700 },
+                // ],
+                topicwiseData:topicwiseData,
+            }
+            return data;
+        } catch (error) {
+            console.log(error);
+            // throw error
+            return null;
         }
-        return data;
-    } catch (error) {
-        console.log(error);
-        // throw error
-        return null;
+    }else{
+        console.log("Please provide a username")
+        return null
     }
 }

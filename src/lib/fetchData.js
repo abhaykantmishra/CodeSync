@@ -14,28 +14,28 @@ async function fetchPlatformsUserData(userId){
 
         let platformData = {};
 
-        if(leetcodeusername !== null ){
+        if(leetcodeusername !== null && leetcodeusername !== "" ){
             const leetcodedata = await axios.get(`/api/plateform/leetcode/${leetcodeusername}`);
             if(leetcodedata.data.success === true){
                 platformData = { ...platformData,"leetcodedata":leetcodedata?.data?.data};
             }
         }
 
-        if(codechefusername !== null ){
+        if(codechefusername !== null && codechefusername !== "" ){
             const codechefdata = await axios.get(`/api/plateform/codechef/${codechefusername}`);
             if(codechefdata.data.success === true){
                 platformData = { ...platformData,"codechefdata":codechefdata?.data?.data};
             }
         }
         
-        if(codeforcesusername !== null ){
+        if(codeforcesusername !== null && codeforcesusername !== "" ){
             const codeforcesdata = await axios.get(`/api/plateform/codeforces/${codeforcesusername}`);
             if(codeforcesdata.data.success === true){
                 platformData = { ...platformData,"codeforcesdata":codeforcesdata?.data?.data};
             }
         }
 
-        if(geeksforgeeksusername !== null ){
+        if(geeksforgeeksusername !== null && geeksforgeeksusername !== "" ){
             const gfgdata = await axios.get(`/api/plateform/gfg/${geeksforgeeksusername}`);
             if(gfgdata.data.success === true){
                 platformData = { ...platformData,"gfgdata":gfgdata?.data?.data};
@@ -43,7 +43,7 @@ async function fetchPlatformsUserData(userId){
         }
         try {
             const data = JSON.stringify(platformData);
-           const res = await dbService.updateUserData({userId:userId},{data:data , fieldname:"platformData"})
+            const res = await dbService.updateUserData({userId:userId},{data:data , fieldname:"platformData"})
         } catch (error) {
             console.log(error);
         }

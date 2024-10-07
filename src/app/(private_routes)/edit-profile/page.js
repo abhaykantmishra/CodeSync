@@ -11,6 +11,8 @@ import { Mail, GraduationCap, Code, MessageCircle, EyeIcon, EyeOffIcon } from "l
 import { useRouter } from 'next/navigation'
 import dbService from '@/appwrite/db_service'
 import jwt from "jsonwebtoken";
+import { useToast } from '@/hooks/use-toast'
+import axios from 'axios'
 
 const initialProfile = {
   basicInfo: {
@@ -43,10 +45,14 @@ const user = {
 }
 
 export default function EditProfile() {
+
+  const { toast } = useToast()
+
   const [profile, setProfile] = useState(initialProfile);
   const [userData , setUserData] = useState();
   const [isPublic , setIsPublic] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isSaving , setIsSaving] = useState(false);
   const router = useRouter();
 
   const fetchCurrentUserdata = async () => {
@@ -80,9 +86,17 @@ export default function EditProfile() {
 
     if (!userData.name.trim()) {
       newErrors.basicInfo = { ...newErrors.basicInfo, name: "Name is required" };
+      toast({
+        variant: "red",
+        description: "Name is a required field",
+      })
     }
     if (!userData.email.trim() || !/^\S+@\S+\.\S+$/.test(userData.email)) {
       newErrors.basicInfo = { ...newErrors.basicInfo, email: "Valid email is required" };
+      toast({
+        variant: "red",
+        description: "Valid email is required",
+      })
     }
 
     setErrors(newErrors);
@@ -99,17 +113,86 @@ export default function EditProfile() {
     return filteredData;
   }
 
+  const checkAndUpdatePlatformData = async (userData) => {
+    let platformData = {};
+    if(userData.codechefusername ){
+      const codechefdata = await axios.get(`/api/plateform/codechef/${userData.codechefusername}`);
+      if(codechefdata.data.success === true){
+          platformData = { ...platformData,"codechefdata":codechefdata?.data?.data};
+      }else{
+        toast({
+          variant:"red",
+          title:"Codechef userhandle is not exist",
+          description:"Either change it to a valid handle or remove it"
+        })
+        return false
+      }
+    }
+    if(userData.leetcodeusername){
+      const leetcodedata = await axios.get(`/api/plateform/leetcode/${userData.leetcodeusername}`);
+      if(leetcodedata.data.success === true){
+          platformData = { ...platformData,"leetcodedata":leetcodedata?.data?.data};
+      }else{
+        toast({
+          variant:"red",
+          title:"Leetcode userhandle is not exist",
+          description:"Either change it to a valid handle or remove it"
+        })
+        return false
+      }
+    }
+    if(userData.codeforcesusername){
+      const codeforcesdata = await axios.get(`/api/plateform/codeforces/${userData.codeforcesusername}`);
+      if(codeforcesdata.data.success === true){
+          platformData = { ...platformData,"codeforcesdata":codeforcesdata?.data?.data};
+      }else{
+        toast({
+          variant:"red",
+          title:"Codeforces userhandle is not exist",
+          description:"Either change it to a valid handle or remove it"
+        })
+        return false
+      }
+    }
+    try {
+      const data = JSON.stringify(platformData);
+      const res = await dbService.updateUserData({userId:userId},{data:data , fieldname:"platformData"})
+    } catch (error) {
+        console.log(error);
+        toast({
+          variant:"red",
+          description:error.message
+        })
+    }
+    return true;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
     if (validateForm()) {
-      // console.log(userData)
+      console.log(userData)
       try {
         const res = await dbService.updateWholeUserData({data:userData});
-        // console.log(res)
+        console.log(res)
+        const updatedPlatformData = await checkAndUpdatePlatformData(res);
+        if(updatedPlatformData === true){
+          toast({
+            variant:"blue",
+            description:"User profile updated successfully"
+          })
+          router.push(`/profile/${userData?.userId}`);
+        }
+        setIsSaving(false);
       } catch (error) {
         console.log(error)
+        setIsSaving(false);
+        toast({
+          variant: "red",
+          title:error.message,
+          description: "Something went wrong while updating User profile",
+        })
       }
-      router.push(`/profile/${userData?.userId}`);
     }
   };
 
@@ -302,8 +385,8 @@ export default function EditProfile() {
               </div>
 
               <div className="pt-4">
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                  Save Changes
+                <Button type="submit" disabled={isSaving} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                  { isSaving ? ( <>Saving..</> ) : (<>Save change</>)}
                 </Button>
               </div>
             </div>
