@@ -58,7 +58,7 @@ export default function Home() {
                 </div>
                 <h2 className="text-xl font-bold">Community Help</h2>
                 <p className="text-center text-gray-500 dark:text-gray-400">
-                  Get help from Community developers when you're stuck.
+                  Get help from Community developers when you&apos;re stuck.
                 </p>
               </div>
             </div>
