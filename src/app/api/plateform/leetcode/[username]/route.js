@@ -34,7 +34,8 @@ export async function GET(request){
         console.log(error)
         return NextResponse.json({
             success:false,
-            msg:"Something went wrong!"
+            msg:"Something went wrong!",
+            error:error
         })
     }
 }
