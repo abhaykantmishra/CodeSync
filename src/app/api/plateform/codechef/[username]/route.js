@@ -5,7 +5,8 @@ const url = `${conf.backendapi}/api/codechef`
 
 export async function GET(request){
     const pathname = String(request?.url).substring(36)
-    const username = pathname.replace("codechef/","");
+    let username = pathname.replace("codechef/","");
+    username = username.replace('plateform/' , "");
     try {
         // console.log(username);
         const data = await getCodechefData(username);

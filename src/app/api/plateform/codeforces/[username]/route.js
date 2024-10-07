@@ -5,7 +5,8 @@ const url = `${conf.backendapi}/api/codeforces`
 
 export async function GET(request){
     const pathname = String(request?.url).substring(36)
-    const username = pathname.replace("codeforces/","");
+    let username = pathname.replace("codeforces/","");
+    username = username.replace('plateform/' , "");
     try {
         // console.log(username);
         const data = await getUserCodeforcesData(username);

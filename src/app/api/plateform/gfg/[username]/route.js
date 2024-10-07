@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 
 export async function GET(request){
     const pathname = String(request?.url).substring(36)
-    const username = pathname.replace("leetcode/","");
+    let username = pathname.replace("gfg/","");
+    username = username.replace('plateform/' , "");
     try {
         // console.log(username);
         const data = await getGFGData(username);
