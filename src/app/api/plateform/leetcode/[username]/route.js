@@ -6,7 +6,7 @@ const url = `${conf.backendapi}/api/leetcode`
 
 export async function GET(request){
     const pathname = String(request?.url).substring(36)
-    const username = pathname.replace("leetcode/","");
+    const username = pathname.replace("/plateform/leetcode/","");
     try {
         console.log(username);
         let data;
@@ -43,7 +43,7 @@ export async function GET(request){
 }
 
 async function getLeetcodeData(username){
-    console.log("username for leetcode data is : " , username);
+    username = username.replace('plateform/' , "");
     if(username?.trim()){
         try {
             console.log(url,username);
