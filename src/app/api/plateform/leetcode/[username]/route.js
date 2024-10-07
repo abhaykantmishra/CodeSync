@@ -13,16 +13,18 @@ export async function GET(request){
         try {
             data = await getLeetcodeData(username);
             console.log(data);
+            data = JSON.stringify(data);
         } catch (error) {
             console.log(error)
         }
         
         // console.log("data:" , data);
 
-        if(!data || !(data.username)){
+        if(!data){
             return NextResponse.json({
                 success:false,
-                msg:"Something went wrong!"
+                msg:"Something went wrong!",
+                data:data,
             })
         }
 
