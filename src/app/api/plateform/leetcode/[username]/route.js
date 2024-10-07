@@ -6,25 +6,26 @@ const url = `${conf.backendapi}/api/leetcode`
 
 export async function GET(request){
     const pathname = String(request?.url).substring(36)
-    const username = pathname.replace("/plateform/leetcode/","");
+    console.log(pathname);
+    let username = pathname.replace("leetcode/","");
+    username = username.replace('plateform/' , "");
+
     try {
-        console.log(username);
+        // console.log(username);
         let data;
         try {
             data = await getLeetcodeData(username);
-            console.log(data);
-            data = JSON.stringify(data);
+            // console.log(data);
         } catch (error) {
             console.log(error)
         }
         
         // console.log("data:" , data);
 
-        if(!data){
+        if(!data || !(data.username)){
             return NextResponse.json({
                 success:false,
-                msg:"Something went wrong!",
-                data:data,
+                msg:"Something went wrong!"
             })
         }
 
@@ -43,17 +44,15 @@ export async function GET(request){
 }
 
 async function getLeetcodeData(username){
-    username = username.replace('plateform/' , "");
     if(username?.trim()){
         try {
             console.log(url,username);
             let res = {};
             try {
                 res = await axios.get(`${url}/${username}`);
-                console.log(res);
             } catch (error) {
                 console.log(error);
-                return null;
+                 return null;
             }
             const userData = res.data;
             const topicwiseData = userData.topicwiseData.map((topic) => {
