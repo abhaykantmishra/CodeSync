@@ -10,33 +10,54 @@ import { BorderBeam } from '@/components/magicui/border-beam';
 import authService from '@/appwrite/auth_service';
 import { useRouter } from 'next/navigation';
 import jwt from "jsonwebtoken";
+import { useToast } from '@/hooks/use-toast';
 
 export default function SignupPage() {
   
   const router = useRouter();
+  const { toast } = useToast();
 
   const [formInput , setFormInput] = useState({
       name:"",
       email:"",
       password:"",
   })
+  const [isSubmitting , setIsSubmitting] = useState(false);
 
   const handleSignup = async (e) => {
       e.preventDefault();
-      const response = await authService.createAccount(formInput);
+      setIsSubmitting(true);
+      // creating account
+      const response = await authService.createAccount(formInput)
+      .then((res) => {})
+      .catch((err) => {
+        toast({
+          variant:'red',
+          description:err.message,
+        })
+        setIsSubmitting(false);
+        return;
+      })
       // logging In user
       const loggedInUser = await authService.loginUser({email:formInput.email , password:formInput.password});
       try {
         const userId = loggedInUser.userId;
         const token = jwt.sign({userId:userId} , process.env.NEXT_PUBLIC_TOKEN_SECRET , {expiresIn:"1d"});
-       
+        
         if(typeof window !== undefined){
           localStorage.setItem("accessToken" , token);
         }
         document.cookie = `accessToken=${token}; path=/; max-age=172800`;
+        setIsSubmitting(false);
         router.push(`/edit-profile`);
       } catch (error) {
         console.log(error)
+        toast({
+          variant:'red',
+          description:error.message,
+        })
+        setIsSubmitting(false);
+        return;
       }
   }
 
@@ -45,9 +66,9 @@ export default function SignupPage() {
       <div className=" flex items-center justify-center h-full my-auto overflow-hidden ">
         <Card className= "border-none rounded-md relative overflow-hidden w-[400px] max-w-[450px] bg-gradient-to-br from-sky-800 via-sky-400 to-sky-800  dark:bg-gradient-to-br dark:from-gray-800 dark:via-purple-900 dark:to-gray-800 items-center">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-white">Welcome to CMS</CardTitle>
+            <CardTitle className="text-2xl font-bold text-white">Welcome to CodeSync</CardTitle>
             <CardDescription className="text-gray-200">
-              Signup to CMS
+              Get started with your journey, Signup to CodeSync
             </CardDescription>
           </CardHeader>
           
@@ -93,8 +114,8 @@ export default function SignupPage() {
                     onChange={(e) => { setFormInput((prev) => ({ ...prev, password: e.target.value })) }}
                 />
                 </div>
-                <Button type="submit" className="w-full mt-8 bg-white text-black hover:bg-gray-200">
-                    Signup →
+                <Button disabled={isSubmitting} type="submit" className="w-full mt-8 bg-white text-black hover:bg-gray-200">
+                    { isSubmitting ? (<>Signing Up..</>) : (<>Signup →</>)}
                 </Button>
             </form>
             <div className="space-y-2">

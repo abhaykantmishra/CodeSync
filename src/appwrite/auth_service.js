@@ -16,13 +16,18 @@ export class AuthService {
     async createAccount({ email, password, name }) {
         try {
             const userId = ID.unique();
-            const newUser = await this.account.create(userId, email, password, name);
+            try {
+                await this.account.create(userId, email, password, name)
+            } catch (error) {
+                throw error
+            }
             const creaeDb = await dbService.createUserData({userId:userId,email:email,name:name})
             .then((res) => {
                 // console.log(res)
             })
             .catch((err) => {
-                console.log(err);
+                // console.log(err);
+                throw err;
             })
             if (newUser) {
                 // call for login

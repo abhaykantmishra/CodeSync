@@ -10,22 +10,38 @@ import { BorderBeam } from '@/components/magicui/border-beam';
 import authService from '@/appwrite/auth_service';
 import { useRouter } from 'next/navigation';
 import jwt from "jsonwebtoken"
+import { useToast } from '@/hooks/use-toast';
+import { description } from '@/components/ui/areachart';
 // import { cookies } from 'next/headers';
 
 export default function LoginPage(){
    
   const router = useRouter();
+  const { toast } = useToast();
 
   const [formInput , setFormInput] = useState({
       email:"",
       password:"",
   })
+  const [isSubmitting , setIsSubmitting] = useState(false);
 
   const handleLogin = async (e) => {
       e.preventDefault();
       console.log("Logging In..")
-      
-      const response = await authService.loginUser(formInput)
+      setIsSubmitting(true);
+      // creating login session =>
+      let response = {};
+      try {
+        response = await authService.loginUser(formInput);
+      } catch (error) {
+        console.log(error);
+        toast({
+          variant:"red",
+          description:error.message
+        })
+        return
+      }
+      // generating access token =>
       try {
         const userId = response.userId;
         const token = jwt.sign({userId:userId} , process.env.NEXT_PUBLIC_TOKEN_SECRET , {expiresIn:"1d"});
@@ -34,9 +50,16 @@ export default function LoginPage(){
         }
         // setting token in cookie =>
         document.cookie = `accessToken=${token}; path=/; max-age=172800`;
+        setIsSubmitting(false)
         router.push(`/dashboard/${userId}`);
       } catch (error) {
         console.log(error)
+        toast({
+          variant:"red",
+          description:error.message
+        })
+        setIsSubmitting(false);
+        return ;
       }
   }
   
