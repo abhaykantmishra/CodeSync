@@ -8,7 +8,7 @@ export async function GET(request){
     const pathname = String(request?.url).substring(36)
     const username = pathname.replace("leetcode/","");
     try {
-        // console.log(username);
+        console.log(username);
         let data;
         try {
             data = await getLeetcodeData(username);
@@ -43,6 +43,7 @@ export async function GET(request){
 }
 
 async function getLeetcodeData(username){
+    console.log("username for leetcode data is : " , username);
     if(username?.trim()){
         try {
             console.log(url,username);
