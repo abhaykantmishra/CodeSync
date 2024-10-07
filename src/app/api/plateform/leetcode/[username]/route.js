@@ -35,7 +35,13 @@ export async function GET(request){
 async function getLeetcodeData(username){
     if(username?.trim()){
         try {
-            const res = await axios.get(`${url}/${username}`);
+            console.log(url,username);
+            let res = {};
+            try {
+                res = await axios.get(`${url}/${username}`);
+            } catch (error) {
+                console.log(error);
+            }
             const userData = res.data;
             const topicwiseData = userData.topicwiseData.map((topic) => {
                 return {topicName:topic.tagName , solvedProblem:topic.problemsSolved}
