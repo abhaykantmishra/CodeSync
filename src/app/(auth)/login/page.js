@@ -68,9 +68,9 @@ export default function LoginPage(){
       <div className=" flex items-center justify-center w-full h-full my-auto overflow-hidden ">
       <Card className= "border-none relative overflow-hidden w-[400px] max-w-[800px] bg-gradient-to-br from-sky-800 via-sky-400 to-sky-800  dark:bg-gradient-to-br dark:from-gray-800 dark:via-purple-900 dark:to-gray-800 items-center">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-white">Welcome Back to CMS</CardTitle>
+          <CardTitle className="text-2xl font-bold text-white">Welcome Back to CodeSync</CardTitle>
           <CardDescription className="text-gray-200">
-            Login to CMS
+            Login to CodeSync
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -101,8 +101,8 @@ export default function LoginPage(){
                   onChange={(e) => { setFormInput((prev) => ({ ...prev, password: e.target.value })) }}
               />
               </div>
-              <Button type="submit" className="w-full mt-7 bg-white text-black hover:bg-gray-200">
-              Login →
+              <Button disabled={isSubmitting} type="submit" className="w-full mt-7 bg-white text-black hover:bg-gray-200">
+              { isSubmitting ? (<>Loging In..</>) : (<> Login →</>)}
               </Button>
           </form>
           <div className="space-y-2">
