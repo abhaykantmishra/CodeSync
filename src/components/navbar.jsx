@@ -48,6 +48,14 @@ export function Navbar({children , loginState=false}) {
     }
   }
 
+  // if(id === "" ){
+  //   return (
+  //     <div>
+  //       You are not Logged In. Login first
+  //     </div>
+  //   )
+  // }
+
   useEffect(() => {
   let userId;
   if(typeof window !== undefined){

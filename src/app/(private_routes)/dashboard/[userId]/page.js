@@ -337,7 +337,7 @@ function DsaStats({ data }) {
           }
         </div>
         {/* Problems Solved Over Time  */}
-        <div className="flex mx-1 px-1 py-[8px] justify-start rounded-sm outline outline-[0.5px] outline-gray-800">
+        <div className="flex mx-1 px-1 py-[8px] justify-start rounded-sm outline outline-[0.5px] outline-gray-300/60 dark:outline-gray-800">
           <Heatmap />
         </div>
       </div>
@@ -470,7 +470,7 @@ function CpStats({ data }) {
           }
         </div>
         {/* Problems Solved Over Time  */}
-        <div className="flex mx-1 px-1 py-[8px] justify-start rounded-sm outline outline-[0.5px] outline-gray-800">
+        <div className="flex mx-1 px-1 py-[8px] justify-start rounded-sm outline outline-[0.7px] outline-gray-300/60 dark:outline-gray-800">
           <Heatmap />
         </div>
       </div>
