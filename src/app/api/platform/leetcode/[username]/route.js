@@ -8,7 +8,7 @@ export async function GET(request){
     const pathname = String(request?.url).substring(36)
     console.log(pathname);
     let username = pathname.replace("leetcode/","");
-    username = username.replace('plateform/' , "");
+    username = username.replace('platform/' , "");
 
     try {
         // console.log(username);

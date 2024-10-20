@@ -15,28 +15,28 @@ async function fetchPlatformsUserData(userId){
         let platformData = {};
 
         if(leetcodeusername !== null && leetcodeusername !== "" ){
-            const leetcodedata = await axios.get(`/api/plateform/leetcode/${leetcodeusername}`);
+            const leetcodedata = await axios.get(`/api/platform/leetcode/${leetcodeusername}`);
             if(leetcodedata.data.success === true){
                 platformData = { ...platformData,"leetcodedata":leetcodedata?.data?.data};
             }
         }
 
         if(codechefusername !== null && codechefusername !== "" ){
-            const codechefdata = await axios.get(`/api/plateform/codechef/${codechefusername}`);
+            const codechefdata = await axios.get(`/api/platform/codechef/${codechefusername}`);
             if(codechefdata.data.success === true){
                 platformData = { ...platformData,"codechefdata":codechefdata?.data?.data};
             }
         }
         
         if(codeforcesusername !== null && codeforcesusername !== "" ){
-            const codeforcesdata = await axios.get(`/api/plateform/codeforces/${codeforcesusername}`);
+            const codeforcesdata = await axios.get(`/api/platform/codeforces/${codeforcesusername}`);
             if(codeforcesdata.data.success === true){
                 platformData = { ...platformData,"codeforcesdata":codeforcesdata?.data?.data};
             }
         }
 
         if(geeksforgeeksusername !== null && geeksforgeeksusername !== "" ){
-            const gfgdata = await axios.get(`/api/plateform/gfg/${geeksforgeeksusername}`);
+            const gfgdata = await axios.get(`/api/platform/gfg/${geeksforgeeksusername}`);
             if(gfgdata.data.success === true){
                 platformData = { ...platformData,"gfgdata":gfgdata?.data?.data};
             }

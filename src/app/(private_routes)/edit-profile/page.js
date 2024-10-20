@@ -116,7 +116,7 @@ export default function EditProfile() {
   const checkAndUpdatePlatformData = async (userData) => {
     let platformData = {};
     if(userData.codechefusername ){
-      const codechefdata = await axios.get(`/api/plateform/codechef/${userData.codechefusername}`);
+      const codechefdata = await axios.get(`/api/platform/codechef/${userData.codechefusername}`);
       if(codechefdata.data.success === true){
           platformData = { ...platformData,"codechefdata":codechefdata?.data?.data};
       }else{
@@ -129,7 +129,7 @@ export default function EditProfile() {
       }
     }
     if(userData.leetcodeusername){
-      const leetcodedata = await axios.get(`/api/plateform/leetcode/${userData.leetcodeusername}`);
+      const leetcodedata = await axios.get(`/api/platform/leetcode/${userData.leetcodeusername}`);
       if(leetcodedata.data.success === true){
           platformData = { ...platformData,"leetcodedata":leetcodedata?.data?.data};
       }else{
@@ -142,7 +142,7 @@ export default function EditProfile() {
       }
     }
     if(userData.codeforcesusername){
-      const codeforcesdata = await axios.get(`/api/plateform/codeforces/${userData.codeforcesusername}`);
+      const codeforcesdata = await axios.get(`/api/platform/codeforces/${userData.codeforcesusername}`);
       if(codeforcesdata.data.success === true){
           platformData = { ...platformData,"codeforcesdata":codeforcesdata?.data?.data};
       }else{
