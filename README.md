@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🚀 Coding Platform Management System
 
-## Getting Started
 
-First, run the development server:
+A powerful management system to monitor and display statistics of users across multiple coding platforms, revealing insights and customizable learning roadmaps.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 🔑 **User Authentication** – Create and log in to your profile.
+- 📊 **Unified Dashboard** – Track all your coding activities in one place.
+- 🔗 **Multi-Platform Support** – Integrate with LeetCode, Codeforces, CodeChef, GFG, and CodeStudio.
+- 💬 **Discussion Page** – Engage in meaningful discussions with other coders.
+- 🛠 **Profile Customization** – Edit your profile and add your coding handles.
+- 🌙 **Dark & Light Mode** – Toggle between themes for a better experience.
+- 🛤 **Roadmap Generation** – Get a personalized roadmap to improve your coding skills.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🔥 Use Cases
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- 📌 Monitor coding progress across multiple platforms effortlessly.
+- 🗂 Keep all your problem-solving stats in a single dashboard.
+- 🤝 Collaborate with peers on the discussion page.
+- 🎯 Generate a tailored roadmap for structured learning.
 
-## Learn More
+## 🖼 Project Tour
 
-To learn more about Next.js, take a look at the following resources:
+### 📌 Dashboard – Monitor All Activities
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| 📊 LeetCode Statistics | 📊 CodeChef Statistics | 📊 Codeforces Statistics |
+|---------|---------|---------|
+| ![ LeetCode Statistics](/public/assets/leetcode.png) | ![ CodeChef Statistics](/public/assets/codechef.png) | ![ Codeforces Statistics](/public/assets/codeforces.png) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<!-- 
+#### 📊 LeetCode Statistics
+![ LeetCode Statistics](/public/assets/leetcode.png)
+<img src="public/assets/leetcode.png" alt="leetcode_img" width="400" />
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### 📊 CodeChef Statistics
+![ CodeChef Statistics](/public/assets/codechef.png)
+<img src="public/assets/codechef.png" alt="codechef_img" width="400" />
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#### 📊 Codeforces Statistics
+![ Codeforces Statistics](/public/assets/codeforces.png)
+<img src="public/assets/codeforces.png" alt="codechef_img" width="400" />
+ -->
+
+### 🛤 Roadmap Page
+
+<!-- ![ Roadmap Page](/public/assets/roadmap.png) -->
+<img src="public/assets/roadmap.png" alt="codechef_img" width="400" />
+
+### 🗣 Discussion Page
+<!-- ![ Discussion Page](/public/assets/discussion.png) -->
+<img src="public/assets/discussion.png" alt="codechef_img" width="400" />
+
+### 🔗 Profile Page
+
+<!-- ![ Profile Page](/public/assets/profile_light.png) -->
+<img src="public/assets/profile_light.png" alt="codechef_img" width="400" />
+
+### 📜 Edit Profile Page
+
+<!-- ![ Profile Page](/public/assets/profile_light.png) -->
+<img src="public/assets/editprofile.png" alt="codechef_img" width="400" />
+
+### 🎭 Dark & Light Mode
+| Dark Mode | Light Mode |
+|-----------|-----------|
+| ![Dark Mode](/public/assets/profile_dark.png) | ![Light Mode](/public/assets/profile_light.png) |
+
+&#x20;
+
+## 🚀 Getting Started
+
+### 🛠 Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/abhaykantmishra/CodeSync.git
+   ```
+2. **Navigate to the Project Directory**
+   ```bash
+   cd CodeSync
+   ```
+3. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+4. **Run the Application**
+   ```bash
+   npm run dev
+   ```
+
+<!-- ## 📜 License
+
+This project is licensed under the MIT License. -->
+
+---
+
+💡 **Contributions are welcome!** Feel free to fork this repository and submit a pull request. 🚀
+

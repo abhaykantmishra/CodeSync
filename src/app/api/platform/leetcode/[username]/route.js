@@ -5,10 +5,12 @@ const url = `${conf.backendapi}/api/leetcode`
 
 
 export async function GET(request){
-    const pathname = String(request?.url).substring(36)
-    console.log(pathname);
-    let username = pathname.replace("leetcode/","");
-    username = username.replace('platform/' , "");
+    const pathname = String(request?.url)
+    // console.log("PathName: ",pathname);
+    const parts = pathname.split('/')
+    // console.log("Parts:",parts)
+    let username = parts[parts.length - 1];
+    // console.log("Username: ", username);
 
     try {
         // console.log(username);

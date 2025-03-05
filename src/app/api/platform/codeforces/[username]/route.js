@@ -4,9 +4,12 @@ import conf from "@/lib/confEnv";
 const url = `${conf.backendapi}/api/codeforces`
 
 export async function GET(request){
-    const pathname = String(request?.url).substring(36)
-    let username = pathname.replace("codeforces/","");
-    username = username.replace('platform/' , "");
+    const pathname = String(request?.url)
+    // console.log("PathName: ",pathname);
+    const parts = pathname.split('/')
+    // console.log("Parts:",parts)
+    let username = parts[parts.length - 1];
+    // console.log("Username: ", username);
     try {
         // console.log(username);
         const data = await getUserCodeforcesData(username);
