@@ -23,6 +23,8 @@ A powerful management system to monitor and display statistics of users across m
 ## 🖼 Project Tour
 
 ### 📌 Dashboard – Monitor All Activities
+![ LeetCode Statistics](/public/assets/leetcode2.png)
+
 
 | 📊 LeetCode Statistics | 📊 CodeChef Statistics | 📊 Codeforces Statistics |
 |---------|---------|---------|
