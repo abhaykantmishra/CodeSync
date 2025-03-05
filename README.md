@@ -26,7 +26,7 @@ A powerful management system to monitor and display statistics of users across m
 
 | 📊 LeetCode Statistics | 📊 CodeChef Statistics | 📊 Codeforces Statistics |
 |---------|---------|---------|
-| ![ LeetCode Statistics](/public/assets/leetcode.png) | ![ CodeChef Statistics](/public/assets/codechef.png) | ![ Codeforces Statistics](/public/assets/codeforces.png) |
+| ![ LeetCode Statistics](/public/assets/leetcode2.png) | ![ CodeChef Statistics](/public/assets/codechef.png) | ![ Codeforces Statistics](/public/assets/codeforces2.png) |
 
 <!-- 
 #### 📊 LeetCode Statistics
@@ -46,7 +46,7 @@ A powerful management system to monitor and display statistics of users across m
 ### 🛤 Roadmap Page
 
 <!-- ![ Roadmap Page](/public/assets/roadmap.png) -->
-<img src="public/assets/roadmap.png" alt="codechef_img" width="400" />
+<img src="public/assets/roadmap.png" alt="codechef_img" width="500" />
 
 ### 🗣 Discussion Page
 <!-- ![ Discussion Page](/public/assets/discussion.png) -->
@@ -60,7 +60,7 @@ A powerful management system to monitor and display statistics of users across m
 ### 📜 Edit Profile Page
 
 <!-- ![ Profile Page](/public/assets/profile_light.png) -->
-<img src="public/assets/editprofile.png" alt="codechef_img" width="400" />
+<img src="public/assets/edit_profile.png" alt="codechef_img" width="400" />
 
 ### 🎭 Dark & Light Mode
 | Dark Mode | Light Mode |
