@@ -82,7 +82,7 @@ export default function LoginPage(){
               <Input
                   // name="email"
                   id="email"
-                  placeholder="example@email.com"
+                  placeholder="one@email.com"
                   type="email"
                   className="bg-sky-400 dark:bg-black"
                   onChange={(e) => { setFormInput((prev) => ({ ...prev, email: e.target.value }));   }}
@@ -97,7 +97,7 @@ export default function LoginPage(){
                   id="password"
                   type="password"
                   className="bg-sky-400 dark:bg-black"
-                  placeholder="password"
+                  placeholder="12345678"
                   onChange={(e) => { setFormInput((prev) => ({ ...prev, password: e.target.value })) }}
               />
               </div>

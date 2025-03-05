@@ -1,7 +1,15 @@
 # 🚀 Coding Platform Management System
 
 
+💡 Boost your productivity by tracking and improving your coding performance with this powerful management system!
+
 A powerful management system to monitor and display statistics of users across multiple coding platforms, revealing insights and customizable learning roadmaps.
+
+🔗 **Live Application:** [Check it out here](https://codesync-next.vercel.app/)
+
+### 🔑 **Testing Credentials for login:**
+   *email: one@email.com* |
+   *password: 12345678* 
 
 ## 🌟 Features
 
@@ -99,4 +107,3 @@ This project is licensed under the MIT License. -->
 ---
 
 💡 **Contributions are welcome!** Feel free to fork this repository and submit a pull request. 🚀
-
