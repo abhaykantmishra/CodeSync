@@ -6,6 +6,8 @@
 A powerful management system to monitor and display statistics of users across multiple coding platforms, revealing insights and customizable learning roadmaps.
 
 🔗 **Live Application:** [Check it out here](https://codesync-next.vercel.app/)
+🔗 **Backend API:** [Github repo here](https://github.com/abhaykantmishra/CoderStatsAPI)
+
 
 ### 🔑 **Testing Credentials for login:**
    *email: one@email.com* |
