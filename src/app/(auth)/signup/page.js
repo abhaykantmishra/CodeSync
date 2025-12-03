@@ -11,6 +11,7 @@ import authService from '@/appwrite/auth_service';
 import { useRouter } from 'next/navigation';
 import jwt from "jsonwebtoken";
 import { useToast } from '@/hooks/use-toast';
+import { description } from '@/components/ui/areachart';
 
 export default function SignupPage() {
   
@@ -27,19 +28,46 @@ export default function SignupPage() {
   const handleSignup = async (e) => {
       e.preventDefault();
       setIsSubmitting(true);
+      
       // creating account
-      const response = await authService.createAccount(formInput)
-      .then((res) => {})
-      .catch((err) => {
-        toast({
-          variant:'red',
-          description:err.message,
+      try {
+        const res = await authService.createAccount({
+          email: formInput.email,
+          name: formInput.name,
+          password: formInput.password
         })
-        setIsSubmitting(false);
-        return;
-      })
+        console.log(res)
+        toast({
+          variant: 'green',
+          description: "Account created successfully"
+        })
+      } catch (error) {
+        console.error(error)
+        toast({
+          variant: 'red',
+          title: "Error: Account creation failed, try again!",
+          description: error.message
+        })
+        return
+      } finally {
+        setIsSubmitting(false)
+      }
+
       // logging In user
-      const loggedInUser = await authService.loginUser({email:formInput.email , password:formInput.password});
+      let loggedInUser;
+      try {
+          loggedInUser = await authService.loginUser({email:formInput.email , password:formInput.password});
+          console.log(loggedInUser)
+        } catch (error) {
+        console.error(error)
+        toast({
+          variant: 'red',
+          description: "Error: User login failed, try again!"
+        })
+        router.push("/login")
+        return
+      }
+      
       try {
         const userId = loggedInUser.userId;
         const token = jwt.sign({userId:userId} , process.env.NEXT_PUBLIC_TOKEN_SECRET , {expiresIn:"1d"});

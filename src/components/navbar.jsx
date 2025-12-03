@@ -18,6 +18,7 @@ export function Navbar({children , loginState=false}) {
   const router = useRouter()
   const location = usePathname();
   const [id , setId] = useState("");
+  const [isLogin, setIsLogin] = useState(null)
 
   const activeClassname = `text-blue-500`;
   const isActive = (name) => {
@@ -41,11 +42,10 @@ export function Navbar({children , loginState=false}) {
     // Implement your logout logic here
     console.log('Logging out...')
     const logoutuser = await authService.logoutUser();
+
     // console.log(logoutuser);
-    if(typeof window != undefined){
-      localStorage.clear();
-      router.push('//')
-    }
+    localStorage.clear();
+    router.push("/")
   }
 
   // if(id === "" ){
@@ -57,16 +57,18 @@ export function Navbar({children , loginState=false}) {
   // }
 
   useEffect(() => {
-  let userId;
-  if(typeof window !== undefined){
-    const token = localStorage.getItem("accessToken")
-    if(token){
-      const decodedToken = jwt.verify(token , process.env.NEXT_PUBLIC_TOKEN_SECRET);
-      userId = decodedToken.userId;
-      setId(userId);
+    let userId;
+
+    if(typeof window !== undefined){
+      const token = localStorage.getItem("accessToken")
+      if(token){
+        const decodedToken = jwt.decode(token , process.env.NEXT_PUBLIC_TOKEN_SECRET);
+        userId = decodedToken?._id;
+        setId(userId);
+        setIsLogin(true)
+      }
     }
-  }
-  },[])
+  },[location])
 
   return (
     <div className='flex flex-col w-full justify-center items-center'>
@@ -78,7 +80,7 @@ export function Navbar({children , loginState=false}) {
           CodeSync
         </Link>
         {
-          loginState === true ? (
+          isLogin === true ? (
             <>
             <Button variant="ghost" size="icon" asChild>
               <Link href={`/dashboard/${id}`}>
@@ -119,7 +121,7 @@ export function Navbar({children , loginState=false}) {
           <span className="sr-only">Toggle dark mode</span>
         </Button>
         {
-          loginState === true ? (
+          isLogin === true ? (
             <>
             <Button variant="ghost" size="icon" asChild>
               <Link href={`/profile/${id}`}>

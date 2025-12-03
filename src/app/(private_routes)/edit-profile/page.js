@@ -13,6 +13,7 @@ import dbService from '@/appwrite/db_service'
 import jwt from "jsonwebtoken";
 import { useToast } from '@/hooks/use-toast'
 import axios from 'axios'
+import { usersApi } from '@/api/users'
 
 const initialProfile = {
   basicInfo: {
@@ -60,10 +61,11 @@ export default function EditProfile() {
       let currUId = "";
       if(typeof window !== undefined){
         const accessToken = localStorage.getItem("accessToken");
-        const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
-        currUId = decodedToken.userId; 
+        const decodedToken = jwt.decode(accessToken);
+        currUId = decodedToken._id; 
       }
-      const currUserdata = await dbService.getUserData({userId : currUId});
+      const res = await usersApi.getUserDetail({id: currUId})
+      const currUserdata = res.data.user
       const data = cleanUserData(currUserdata)
       setUserData(data);
       setIsPublic(data?.isPublic);

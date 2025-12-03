@@ -11,8 +11,8 @@ import authService from '@/appwrite/auth_service';
 import { useRouter } from 'next/navigation';
 import jwt from "jsonwebtoken"
 import { useToast } from '@/hooks/use-toast';
-import { description } from '@/components/ui/areachart';
-// import { cookies } from 'next/headers';
+
+import { usersApi } from '@/api/users';
 
 export default function LoginPage(){
    
@@ -32,35 +32,28 @@ export default function LoginPage(){
       // creating login session =>
       let response = {};
       try {
-        response = await authService.loginUser(formInput);
+        response = await usersApi.loginUser({email: formInput.email, password: formInput.password})
+        toast({
+          variant:"green",
+          title: "Login successful",
+        })
+        // save token
+        localStorage.setItem("accessToken", response?.data?.token)
+        // go to profile
+        router.push(`/profile/${response?.data?.user?._id}`)
       } catch (error) {
         console.log(error);
         toast({
           variant:"red",
+          title: "Login failed!",
           description:error.message
         })
         return
       }
-      // generating access token =>
-      try {
-        const userId = response.userId;
-        const token = jwt.sign({userId:userId} , process.env.NEXT_PUBLIC_TOKEN_SECRET , {expiresIn:"1d"});
-        if(typeof window !== undefined){
-          localStorage.setItem("accessToken" , token);
-        }
-        // setting token in cookie =>
-        document.cookie = `accessToken=${token}; path=/; max-age=172800`;
+      finally{
         setIsSubmitting(false)
-        router.push(`/dashboard/${userId}`);
-      } catch (error) {
-        console.log(error)
-        toast({
-          variant:"red",
-          description:error.message
-        })
-        setIsSubmitting(false);
-        return ;
       }
+      
   }
   
   return (

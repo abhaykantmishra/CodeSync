@@ -16,22 +16,34 @@ export class AuthService {
     async createAccount({ email, password, name }) {
         try {
             const userId = ID.unique();
+            
             try {
                 await this.account.create(userId, email, password, name)
             } catch (error) {
                 throw error
             }
-            const creaeDb = await dbService.createUserData({userId:userId,email:email,name:name})
+
+            let newUser;
+            
+            dbService.createUserData({userId:userId,email:email,name:name})
             .then((res) => {
                 // console.log(res)
+                newUser = res
             })
             .catch((err) => {
                 // console.log(err);
                 throw err;
             })
+
             if (newUser) {
                 // call for login
-                this.loginUser({ email, password});
+                // this.loginUser({ email, password})
+                // .then((res) => {
+                //     return res
+                // })
+                // .catch((err) => {
+                //     throw err
+                // })
                 return newUser;
             }
             else {
