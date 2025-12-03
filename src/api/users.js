@@ -45,8 +45,22 @@ async function getUserDetail({id}){
     }
 }
 
+async function updateProfile({id, data}){
+    if(!id || !data){
+        throw new Error("Id is required!")
+    }
+
+    try {
+        const res = await api.patch(`/api/users/profile/${id}`, {...data})
+        return res
+    } catch (error) {
+        throw error
+    }
+}
+
 export  const usersApi = {
     registerUser,
     loginUser,
     getUserDetail,
+    updateProfile,
 }

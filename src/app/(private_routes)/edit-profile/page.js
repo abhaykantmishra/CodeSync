@@ -50,6 +50,7 @@ export default function EditProfile() {
   const { toast } = useToast()
 
   const [profile, setProfile] = useState(initialProfile);
+  const [id, setUserid] = useState(null)
   const [userData , setUserData] = useState();
   const [isPublic , setIsPublic] = useState(false);
   const [errors, setErrors] = useState({});
@@ -63,6 +64,7 @@ export default function EditProfile() {
         const accessToken = localStorage.getItem("accessToken");
         const decodedToken = jwt.decode(accessToken);
         currUId = decodedToken._id; 
+        setUserid(currUId)
       }
       const res = await usersApi.getUserDetail({id: currUId})
       const currUserdata = res.data.user
@@ -117,8 +119,8 @@ export default function EditProfile() {
 
   const checkAndUpdatePlatformData = async (userData) => {
     let platformData = {};
-    if(userData.codechefusername ){
-      const codechefdata = await axios.get(`/api/platform/codechef/${userData.codechefusername}`);
+    if(userData.codechef_username ){
+      const codechefdata = await axios.get(`/api/platform/codechef/${userData.codechef_username}`);
       if(codechefdata.data.success === true){
           platformData = { ...platformData,"codechefdata":codechefdata?.data?.data};
       }else{
@@ -130,8 +132,8 @@ export default function EditProfile() {
         return false
       }
     }
-    if(userData.leetcodeusername){
-      const leetcodedata = await axios.get(`/api/platform/leetcode/${userData.leetcodeusername}`);
+    if(userData.leetcode_username){
+      const leetcodedata = await axios.get(`/api/platform/leetcode/${userData.leetcode_username}`);
       if(leetcodedata.data.success === true){
           platformData = { ...platformData,"leetcodedata":leetcodedata?.data?.data};
       }else{
@@ -143,8 +145,8 @@ export default function EditProfile() {
         return false
       }
     }
-    if(userData.codeforcesusername){
-      const codeforcesdata = await axios.get(`/api/platform/codeforces/${userData.codeforcesusername}`);
+    if(userData.codeforces_username){
+      const codeforcesdata = await axios.get(`/api/platform/codeforces/${userData.codeforces_username}`);
       if(codeforcesdata.data.success === true){
           platformData = { ...platformData,"codeforcesdata":codeforcesdata?.data?.data};
       }else{
@@ -175,24 +177,24 @@ export default function EditProfile() {
     if (validateForm()) {
       console.log(userData)
       try {
-        const res = await dbService.updateWholeUserData({data:userData});
-        console.log(res)
-        const updatedPlatformData = await checkAndUpdatePlatformData(res);
-        if(updatedPlatformData === true){
-          toast({
-            variant:"blue",
-            description:"User profile updated successfully"
-          })
-          router.push(`/profile/${userData?.userId}`);
-        }
+        const res = await usersApi.updateProfile({id: id, data:userData});
+        console.log(res.data)
+        // const updatedPlatformData = await checkAndUpdatePlatformData(res);
+        // if(updatedPlatformData === true){
+        //   toast({
+        //     variant:"blue",
+        //     description:"User profile updated successfully"
+        //   })
+        //   router.push(`/profile/${userData?.userId}`);
+        // }
         setIsSaving(false);
       } catch (error) {
         console.log(error)
         setIsSaving(false);
         toast({
           variant: "red",
-          title:error.message,
-          description: "Something went wrong while updating User profile",
+          title: "Profile updation failed!" ,
+          description: error.response.data.message || error.message,
         })
       }
     }
@@ -300,8 +302,8 @@ export default function EditProfile() {
                   Coding Platforms
                 </h3>
                 {
-                  ( userData && (!userData.leetcodeusername && !userData.codechef && !userData.codeforces 
-                    && !userData.geeksforgeeksusername && !userData.codestudiousername))  ?
+                  ( userData && (!userData.leetcode_username && !userData.codechef_username && !userData.codeforces_username 
+                    && !userData.geeksforgeeks_username && !userData.codestudio_username))  ?
                   (
                     <p className='text-red-500 text-center text-sm font-semibold mb-2' >Add at least one Platform to see Dashboard</p>
                   ) : (<></>)
@@ -310,40 +312,40 @@ export default function EditProfile() {
                   <div>
                     <Label htmlFor="leetcode">Leetcode</Label>
                     <Input
-                      value={userData?.leetcodeusername}
-                      onChange={(e) => setUserData((prev) => ({...prev, leetcodeusername:e.target.value}))}
+                      value={userData?.leetcode_username}
+                      onChange={(e) => setUserData((prev) => ({...prev, leetcode_username:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
                   <div>
                     <Label htmlFor="codechef">Codechef</Label>
                     <Input
-                      value={userData?.codechefusername}
-                      onChange={(e) => setUserData((prev) => ({...prev, codechefusername:e.target.value}))}
+                      value={userData?.codechef_username}
+                      onChange={(e) => setUserData((prev) => ({...prev, codechef_username:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
                   <div>
                     <Label htmlFor="codeforces">Codeforces</Label>
                     <Input
-                      value={userData?.codeforcesusername}
-                      onChange={(e) => setUserData((prev) => ({...prev, codeforcesusername:e.target.value}))}
+                      value={userData?.codeforces_username}
+                      onChange={(e) => setUserData((prev) => ({...prev, codeforces_username:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
                   <div>
                     <Label htmlFor="geeksforgeeks">GFG</Label>
                     <Input
-                      value={userData?.geeksforgeeksusername}
-                      onChange={(e) => setUserData((prev) => ({...prev, geeksforgeeksusername:e.target.value}))}
+                      value={userData?.geeksforgeeks_username}
+                      onChange={(e) => setUserData((prev) => ({...prev, geeksforgeeks_username:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
                   <div>
                     <Label htmlFor="codestudio">Codestudio</Label>
                     <Input
-                      value={userData?.codestudiousername}
-                      onChange={(e) => setUserData((prev) => ({...prev, codestudiousername:e.target.value}))}
+                      value={userData?.codestudio_username}
+                      onChange={(e) => setUserData((prev) => ({...prev, codestudio_username:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
@@ -362,24 +364,24 @@ export default function EditProfile() {
                   <div>
                     <Label htmlFor="discord">Discord</Label>
                     <Input
-                      value={userData?.discordusername}
-                      onChange={(e) => setUserData((prev) => ({...prev, discordusername:e.target.value}))}
+                      value={userData?.discord_username}
+                      onChange={(e) => setUserData((prev) => ({...prev, discord_username:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
                   <div>
                     <Label htmlFor="github">Github</Label>
                     <Input
-                      value={userData?.githubusername}
-                      onChange={(e) => setUserData((prev) => ({...prev, githubusername:e.target.value}))}
+                      value={userData?.github_username}
+                      onChange={(e) => setUserData((prev) => ({...prev, github_username:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
                   <div>
                     <Label htmlFor="linkedin">Linkedin</Label>
                     <Input
-                      value={userData?.linkedinusername}
-                      onChange={(e) => setUserData((prev) => ({...prev, linkedinusername:e.target.value}))}
+                      value={userData?.linkedin_username}
+                      onChange={(e) => setUserData((prev) => ({...prev, linkedin_username:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
