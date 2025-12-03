@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation"
 import dbService from "@/appwrite/db_service"
 import { useEffect, useState } from "react"
 import jwt from "jsonwebtoken"
+import { usersApi } from "@/api/users"
 
 const userProfileData = {
   basicInfo: {
@@ -35,7 +36,7 @@ const userProfileData = {
   },
 };
 
-export default function UserProfile({ profile = userProfileData }) {
+export default function UserProfile() {
   const location = usePathname();
   const userId = location.replace("/profile/","")
 
@@ -47,16 +48,17 @@ export default function UserProfile({ profile = userProfileData }) {
     let currUId = "";
     if(typeof window !== undefined){
       const accessToken = localStorage.getItem("accessToken");
-      const decodedToken = jwt.verify(accessToken , process.env.NEXT_PUBLIC_TOKEN_SECRET);
-      currUId = decodedToken.userId; 
+      const decodedToken = jwt.decode(accessToken);
+      currUId = decodedToken._id; 
     }
     if(userId === currUId){
       setIsCurrentUser(true)
     }
     try {
-      const userData = await dbService.getUserData({userId:userId});
-      setUserdata(userData);
+      const res = await usersApi.getUserDetail({id: currUId})
+      const userData = res.data.user
       setIsPublic(userData?.isPublic);
+      setUserdata(userData);
     } catch (error) {
       console.log(error);
     }
@@ -122,7 +124,7 @@ export default function UserProfile({ profile = userProfileData }) {
               Educational Info- 
             </h3>
             <p className="text-green-800 dark:text-green-200"><strong>College:</strong> {userdata?.college}</p>
-            <p className="text-green-800 dark:text-green-200"><strong>Graduation Year:</strong> {userdata?.graduationyear}</p>
+            <p className="text-green-800 dark:text-green-200"><strong>Graduation Year:</strong> {userdata?.graduation_year}</p>
           </div>
 
           <Separator />
@@ -144,8 +146,8 @@ export default function UserProfile({ profile = userProfileData }) {
             ) }
             </div>
             {
-              ( userdata && (!userdata.leetcodeusername && !userdata.codechef && !userdata.codeforces 
-                && !userdata.geeksforgeeksusername && !userdata.codestudiousername))  ?
+              ( userdata && (!userdata.leetcode_username && !userdata.codechef_username && !userdata.codeforces_username 
+                && !userdata.geeksforgeeks_username && !userdata.codestudio_username))  ?
               (
                 <p className='text-red-500 text-center text-sm font-semibold mb-5' >Add at least one Platform to see Dashboard</p>
               ) : (<></>)
@@ -153,23 +155,23 @@ export default function UserProfile({ profile = userProfileData }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-yellow-100 dark:bg-transparent p-2 rounded-sm outline outline-[0.2px] outline-yellow-800 dark:outline-yellow-200">
                   <span className="font-semibold text-yellow-800 dark:text-yellow-200">Leetcode</span>
-                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.leetcodeusername}</span>
+                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.leetcode_username}</span>
                 </div>
                 <div className="bg-yellow-100 dark:bg-transparent p-2 rounded-sm outline outline-[0.2px] outline-yellow-800 dark:outline-yellow-200">
                   <span className="font-semibold text-yellow-800 dark:text-yellow-200">Codechef</span>
-                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.codechefusername}</span>
+                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.codechef_username}</span>
                 </div>
                 <div className="bg-yellow-100 dark:bg-transparent p-2 rounded-sm outline outline-[0.2px] outline-yellow-800 dark:outline-yellow-200">
                   <span className="font-semibold text-yellow-800 dark:text-yellow-200">Codeforces</span>
-                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.codeforcesusername}</span>
+                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.codeforces_username}</span>
                 </div>
                 <div className="bg-yellow-100 dark:bg-transparent p-2 rounded-sm outline outline-[0.2px] outline-yellow-800 dark:outline-yellow-200">
                   <span className="font-semibold text-yellow-800 dark:text-yellow-200">GFG</span>
-                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.geeksforgeeksusername}</span>
+                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.geeksforgeeks_username}</span>
                 </div>
                 <div className="bg-yellow-100 dark:bg-transparent p-2 rounded-sm outline outline-[0.2px] outline-yellow-800 dark:outline-yellow-200">
                   <span className="font-semibold text-yellow-800 dark:text-yellow-200">Codestudio</span>
-                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.codestudiousername}</span>
+                  <span className="ml-2 text-yellow-700 dark:text-yellow-300">{userdata?.codestudio_username}</span>
                 </div>
             </div>
           </div>
@@ -181,10 +183,10 @@ export default function UserProfile({ profile = userProfileData }) {
               <MessageCircle className="h-5 w-5 mr-2" />
               Social Handles
             </h3>
-            <div className="space-y-2">
-              <p className="text-purple-800 dark:text-purple-200"><strong>Discord:</strong> {userdata?.discordusername}</p>
-              <p className="text-purple-800 dark:text-purple-200"><strong>LinkedIn:</strong> {userdata?.linkedinusername}</p>
-              <p className="text-purple-800 dark:text-purple-200"><strong>Github:</strong> {userdata?.githubusername}</p>
+            <div className="space-y-2 flex flex-col ">
+              <p href={`https://github.com/`} className="text-purple-800 dark:text-purple-200"><strong>Discord:</strong> {userdata?.discord_username}</p>
+              <Link href={`https://linkedin.com/in/${userdata?.linkedin_username ?? ""}`} className="text-purple-800 dark:text-purple-200"><strong>LinkedIn:</strong> {userdata?.linkedin_username ?? ""}</Link>
+              <Link href={`https://github.com/${userdata?.github_username ?? ""}`} className="text-purple-800 dark:text-purple-200"><strong>Github:</strong> {userdata?.github_username}</Link>
             </div>
           </div>
         </CardContent>

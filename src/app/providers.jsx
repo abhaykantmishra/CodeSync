@@ -16,7 +16,7 @@ export function Providers({children}){
         token = localStorage.getItem("accessToken")
       }
       try {
-        const decodedtoken = jwt.verify(token , process.env.NEXT_PUBLIC_TOKEN_SECRET);
+        const decodedtoken = jwt.decode(token);
         if(decodedtoken){
           setLogin(true);
         }else{

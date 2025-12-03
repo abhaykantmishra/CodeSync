@@ -49,7 +49,6 @@ export default function EditProfile() {
 
   const { toast } = useToast()
 
-  const [profile, setProfile] = useState(initialProfile);
   const [id, setUserid] = useState(null)
   const [userData , setUserData] = useState();
   const [isPublic , setIsPublic] = useState(false);
@@ -178,7 +177,12 @@ export default function EditProfile() {
       console.log(userData)
       try {
         const res = await usersApi.updateProfile({id: id, data:userData});
-        console.log(res.data)
+        // console.log(res.data)
+        toast({
+          variant: "green",
+          title: "Profile updated successfully" ,
+          description: res?.data?.message ?? "",
+        })
         // const updatedPlatformData = await checkAndUpdatePlatformData(res);
         // if(updatedPlatformData === true){
         //   toast({
@@ -285,8 +289,8 @@ export default function EditProfile() {
                     <Label htmlFor="graduationYear">Graduation Year</Label>
                     <Input
                       id="graduationYear"
-                      value={userData?.graduationyear}
-                      onChange={(e) => setUserData((prev) => ({...prev, graduationyear:e.target.value}))}
+                      value={userData?.graduation_year}
+                      onChange={(e) => setUserData((prev) => ({...prev, graduation_year:e.target.value}))}
                       className="mt-1"
                     />
                   </div>
